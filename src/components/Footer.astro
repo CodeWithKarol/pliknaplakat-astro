@@ -1,0 +1,39 @@
+---
+import { footerContent } from "@/lib/footer-content"
+---
+
+<footer class="bg-muted/30 py-12 md:py-16 px-6 mt-16 md:mt-20">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
+    <!-- Column 1: Identity -->
+    <div>
+      <h3 class="font-bold text-lg text-foreground">{footerContent.brand.name}</h3>
+      <p class="text-sm text-muted-foreground mt-3 md:mt-4">
+        {footerContent.brand.slogan}
+      </p>
+    </div>
+    
+    <!-- Column 2: Offer -->
+    <div>
+      <h3 class="font-bold text-sm uppercase tracking-wider text-foreground">{footerContent.offer.title}</h3>
+      <ul class="space-y-2 md:space-y-3 mt-4 text-sm text-muted-foreground">
+        {footerContent.offer.links.map((link) => (
+          <li><a href={link.href} class="hover:text-primary transition-colors">{link.label}</a></li>
+        ))}
+      </ul>
+    </div>
+    
+    <!-- Column 3: Trust -->
+    <div>
+      <h3 class="font-bold text-sm uppercase tracking-wider text-foreground">{footerContent.support.title}</h3>
+      <ul class="space-y-2 md:space-y-3 mt-4 text-sm text-muted-foreground">
+        <li>Kontakt: <a href={`mailto:${footerContent.support.email}`} class="hover:text-primary transition-colors">{footerContent.support.email}</a></li>
+        {footerContent.support.links.map((link) => (
+          <li><a href={link.href} class="hover:text-primary transition-colors">{link.label}</a></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto mt-12 md:mt-16 pt-6 md:pt-8 border-t border-border text-center text-xs text-muted-foreground">
+    {footerContent.copyright}
+  </div>
+</footer>

@@ -1,17 +1,174 @@
 ---
 import Layout from "@/layouts/main.astro"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { heroContent } from "@/lib/hero-content"
+import { storyContent } from "@/lib/story-content"
+import { collections } from "@/lib/collections-content"
+import { scarcityContent } from "@/lib/scarcity-content"
+import { educationContent } from "@/lib/education-content"
+import { faqContent } from "@/lib/faq-content"
+import { Image } from "astro:assets"
+import heroBg from "@/assets/hero-bg.jpg"
+
+const collectionImages = import.meta.glob<{default: ImageMetadata}>('/src/assets/collections/**/*.{png,jpg,jpeg}')
 ---
 
 <Layout>
-  <div class="flex min-h-svh p-6">
-    <div class="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-      <div>
-        <h1 class="font-medium">Project ready!</h1>
-        <p>You may now add components and start building.</p>
-        <p>We've already added the button component for you.</p>
-        <Button client:load className="mt-2">Button</Button>
+  <div class="relative w-full overflow-hidden">
+    <!-- Background Image -->
+    <div 
+      class="absolute inset-0 z-0 bg-cover bg-center md:bg-fixed" 
+      style={`background-image: url('${heroBg.src}');`}
+    >
+      <!-- Dark Overlay for contrast -->
+      <div class="absolute inset-0 bg-black/50"></div>
+    </div>
+    
+    <!-- Centered content -->
+    <div class="relative z-10 max-w-3xl mx-auto px-6 py-32 text-center text-white">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-tight">
+        {heroContent.heading}
+      </h1>
+      <p class="text-lg sm:text-xl mt-6 leading-relaxed text-gray-200">
+        {heroContent.subtitle}
+      </p>
+      <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-10">
+        <a 
+          href="#kolekcje" 
+          class={buttonVariants({ variant: "secondary", size: "lg" })}
+        >
+          {heroContent.cta.primary}
+        </a>
+        <a 
+          href="#" 
+          class={buttonVariants({ variant: "outline", size: "lg" }) + " bg-transparent border-gray-300 text-white hover:bg-white/20 hover:text-white"}
+        >
+          {heroContent.cta.secondary}
+        </a>
       </div>
     </div>
   </div>
+
+  <!-- Storytelling Section -->
+  <section class="py-16 md:py-24 px-6 bg-background">
+    <div class="max-w-2xl mx-auto">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground leading-snug">
+        {storyContent.heading}
+      </h2>
+      <p class="text-base sm:text-lg text-muted-foreground mt-6 sm:mt-8 leading-relaxed border-l-4 border-primary pl-4 sm:pl-6">
+        {storyContent.body}
+      </p>
+    </div>
+  </section>
+
+  <!-- Collections Section -->
+  <section id="kolekcje" class="max-w-5xl mx-auto px-6 py-24">
+    <div class="text-center">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
+        Gotowe zestawy, które odmienią Twój dom.
+      </h2>
+      <p class="max-w-xl mx-auto text-center mt-4 text-base sm:text-lg text-muted-foreground">
+        Nie musisz być projektantem, by nadać wnętrzu charakteru. Wybrałem dla Ciebie najlepsze kadry z moich europejskich podróży i pogrupowałem je w zestawy, które idealnie do siebie pasują.
+      </p>
+    </div>
+    
+    <div class="grid sm:grid-cols-2 gap-8 md:gap-16 mt-12 md:mt-16">
+      {collections.map(async (item) => {
+        const images = await Promise.all(
+          item.images.map(path => collectionImages[path]())
+        );
+        return (
+          <div class="group flex flex-col h-full">
+            <div class="grid grid-cols-3 gap-2 mb-6">
+              {images.map((img) => (
+                <Image 
+                  src={img.default} 
+                  alt={item.title} 
+                  format="webp"
+                  width={300}
+                  height={400}
+                  class="aspect-[3/4] object-cover rounded-md shadow-sm"
+                />
+              ))}
+            </div>
+            <div class="flex flex-col flex-grow">
+              <h3 class="text-xl sm:text-2xl font-semibold">{item.title}</h3>
+              <p class="text-sm sm:text-base text-muted-foreground mt-3 flex-grow">{item.description}</p>
+              <p class="text-lg sm:text-xl font-bold mt-4 text-primary">{item.price}</p>
+              <a 
+                href={item.checkoutUrl} 
+                class={buttonVariants({ variant: "default", size: "default" }) + " mt-4 w-full"}
+              >
+                Wybierz zestaw
+              </a>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+
+  <!-- Scarcity Section -->
+  <section class="bg-primary/5 py-16 md:py-20 px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="inline-flex items-center justify-center p-2.5 sm:p-3 rounded-full bg-primary/10 text-primary mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gem"><path d="M6 3h12l4 6-10 13-10-13Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg>
+      </div>
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground leading-snug">
+        {scarcityContent.heading}
+      </h2>
+      <p class="max-w-xl mx-auto text-base sm:text-lg text-muted-foreground mt-6 sm:mt-8 leading-relaxed">
+        {scarcityContent.body}
+      </p>
+    </div>
+  </section>
+
+  <!-- Education Section -->
+  <section id="poradnik" class="max-w-4xl mx-auto px-6 py-16 md:py-24">
+    <div class="text-center">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground leading-snug">
+        {educationContent.heading}
+      </h2>
+      <p class="text-base sm:text-lg text-muted-foreground mt-6 sm:mt-8 leading-relaxed">
+        {educationContent.body}
+      </p>
+    </div>
+    
+    <div class="grid sm:grid-cols-3 gap-4 sm:gap-6 mt-10 md:mt-12">
+      {educationContent.points.map((point) => (
+        <div class="bg-card p-5 sm:p-6 rounded-xl border border-border text-center">
+          <h3 class="font-semibold text-foreground text-sm sm:text-base">{point.title}</h3>
+          <p class="text-xs sm:text-sm text-muted-foreground mt-2 sm:mt-3">{point.description}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="text-center mt-10 md:mt-12">
+      <a 
+        href="https://pliknaplakat.lemonsqueezy.com/checkout/buy/0472c0ae-348c-4749-b800-d5f1f868cbbe" 
+        class={buttonVariants({ variant: "default", size: "lg" })}
+      >
+        {educationContent.cta}
+      </a>
+    </div>
+  </section>
+  <!-- FAQ Section -->
+  <section class="max-w-3xl mx-auto px-6 py-16 md:py-24">
+    <h2 class="text-2xl sm:text-3xl font-bold text-center text-foreground">
+      Najczęściej zadawane pytania
+    </h2>
+    
+    <div class="space-y-8 sm:space-y-10 mt-12 sm:mt-16">
+      {faqContent.map((faq) => (
+        <div>
+          <h3 class="text-base sm:text-lg font-semibold text-foreground">
+            {faq.question}
+          </h3>
+          <p class="text-sm sm:text-base text-muted-foreground mt-2">
+            {faq.answer}
+          </p>
+        </div>
+      ))}
+    </div>
+  </section>
 </Layout>
